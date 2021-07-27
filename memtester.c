@@ -118,6 +118,7 @@ int main(int argc, char **argv) {
     int do_mlock = 1, done_mem = 0;
     int exit_code = 0;
     int memfd, opt, memshift;
+    memshift = 0;
     size_t maxbytes = -1; /* addressable memory, in bytes */
     size_t maxmb = (maxbytes >> 20) + 1; /* addressable memory, in MB */
     /* Device to mmap memory from with -p, default is normal core */
@@ -139,7 +140,7 @@ int main(int argc, char **argv) {
     /* If MEMTESTER_TEST_MASK is set, we use its value as a mask of which
        tests we run.
      */
-    if (env_testmask = getenv("MEMTESTER_TEST_MASK")) {
+    if ((env_testmask = getenv("MEMTESTER_TEST_MASK"))) {
         errno = 0;
         testmask = strtoul(env_testmask, 0, 0);
         if (errno) {
@@ -310,7 +311,7 @@ int main(int argc, char **argv) {
             fflush(stdout);
             if ((size_t) buf % pagesize) {
                 /* printf("aligning to page -- was 0x%tx\n", buf); */
-                aligned = (void volatile *) ((size_t) buf & pagesizemask) + pagesize;
+                aligned = (uint8_t volatile *) ((size_t) buf & pagesizemask) + pagesize;
                 /* printf("  now 0x%tx -- lost %d bytes\n", aligned,
                  *      (size_t) aligned - (size_t) buf);
                  */
